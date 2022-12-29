@@ -22,15 +22,11 @@ class Graph:
         self.graph = []
 
     def __add_node(self, v):
-        if v in self.vertex:
-            print("Node already exists")
-
-        else:
-            self.node_count += 1
-            self.vertex.append(v)
-            for row in self.graph:
-                row.append(0)
-            self.graph.append([0 for _ in range(self.node_count)])
+        self.node_count += 1
+        self.vertex.append(v)
+        for row in self.graph:
+            row.append(0)
+        self.graph.append([0 for _ in range(self.node_count)])
 
     def add_edge(self, v1, v2):
         if v1 not in self.vertex:
@@ -38,8 +34,8 @@ class Graph:
         if v2 not in self.vertex:
             self.__add_node(v2)
         if v1 and v2 in self.vertex:
-            index_v1, index_v2 = self.vertex.index(v1), self.vertex.index(v2)
-            self.graph[index_v1][index_v2], self.graph[index_v2][index_v1] = 1, 1
+            self.graph[self.vertex.index(v1)][self.vertex.index(v2)], self.graph[self.vertex.index(v2)][self.vertex.
+                index(v1)] = 1, 1
 
     def dfs(self, node):
         visited = list()
@@ -51,28 +47,37 @@ class Graph:
                 curr = stack.pop()
                 if curr not in visited:
                     visited.append(curr)
-                    for i, num in enumerate(self.graph[self.vertex.index(curr)]):
+                    for index, num in enumerate(self.graph[self.vertex.index(curr)]):
                         if num == 1:
-                            stack.append(self.vertex[i])
+                            stack.append(self.vertex[index])
         return visited
 
     def display(self):
-        print(self.vertex)
-        for row in self.graph:
-            print(row)
+        print("The Adjecency matrix is : ")
+        print(" ",end = "  ")
+        for node in self.vertex:
+            print(node,end = "  ")
+        print()
+        for i, row in enumerate(self.graph):
+            print(self.vertex[i],end = "  ")
+            for num in row:
+                print(num,end = "  ")
+            print()
 
 
-def group(g):
+g = Graph()
+
+
+def group(obj):
     visited = list()
     groups = []
-    for node in g.vertex:
+    for node in obj.vertex:
         if node not in visited:
-            visited = g.dfs(node)
+            visited = obj.dfs(node)
             groups.append(list(visited))
     return groups
 
 
-g = Graph()
 # Input
 with open("inputPS06.txt") as file:
     content = file.readlines()
@@ -81,6 +86,7 @@ for line in content:
     names = line.split("/")
     g.add_edge(names[0], names[1])
 file.close()
+
 # Output
 with open("outputPS06.txt", "w") as file:
     for i, grp in enumerate(group(g)):
